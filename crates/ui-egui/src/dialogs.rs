@@ -962,6 +962,24 @@ fn dialogs(app: &mut PdfCraftApp, ctx: &egui::Context) {
                 close = crate::js_ui::document_js_body(ui, app, &t);
                 return;
             }
+            Dialog::AiSetup | Dialog::AiSummary | Dialog::AiAsk => {
+                #[cfg(not(target_arch = "wasm32"))]
+                {
+                    let (done, then) = crate::ai::dialog(app, ui, &t, dialog);
+                    close = done;
+                    if let Some(d) = then {
+                        next = d;
+                    }
+                }
+                #[cfg(target_arch = "wasm32")]
+                {
+                    // English only, like the rest of the AI dialogs (no catalogue entries yet).
+                    ui.label("AI tools are in the desktop app.");
+                    ui.add_space(10.0);
+                    close = widgets::pill_button(ui, tl!("Close"), true).clicked();
+                }
+                return;
+            }
             Dialog::Preferences => {
                 // The settings outgrow a short window: scroll them rather than run off the screen.
                 let max = (ui.ctx().content_rect().height() - 120.0).max(200.0);

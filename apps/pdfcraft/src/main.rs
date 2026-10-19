@@ -78,6 +78,20 @@ fn settings_dir() -> Option<std::path::PathBuf> {
     }
 }
 
+/// What publik needs to know about this build. The app token is public by design (it can only
+/// mint capped keys attributed to PdfCraft) and lives at the repository root, so source builds
+/// carry it. AI settings (`ai.json`) go in the preferences folder, next to `app.ron`.
+fn app_info(config_dir: Option<std::path::PathBuf>) -> pdfcraft_ui_egui::ai::AppInfo {
+    pdfcraft_ui_egui::ai::AppInfo {
+        slug: "pdfcraft",
+        name: "PdfCraft",
+        version: env!("CARGO_PKG_VERSION"),
+        app_token: include_str!("../../../publik-app-token.txt"),
+        dialects: &["chat_completions"],
+        config_dir,
+    }
+}
+
 /// Move the settings and crash-recovery folders of the app's former name, PrintCraft, to the new
 /// name once, so an upgrade keeps recent files, preferences and unsaved work. Best effort: a
 /// folder is left alone when the new one already exists or the move fails. A portable copy leaves
@@ -208,6 +222,12 @@ fn main() -> eframe::Result {
             }
             _ => files.push(path_from_arg(a)),
         }
+    }
+    // Builder check (publikhq.com/skills/setup.md): the built app provisions publik API for real
+    // and prints one line. The builder who runs it is the consent.
+    if std::env::var_os("PUBLIK_SELF_TEST").is_some() {
+        println!("{}", pdfcraft_ui_egui::ai::self_test(&app_info(settings_dir())));
+        return Ok(());
     }
     let files = rejoin_split_paths(files, |p| std::path::Path::new(p).is_file());
     let integrated = cfg!(target_os = "macos");
@@ -404,6 +424,16 @@ fn app_creator<'a>(
         }
         if let Some(server) = instance {
             app.os_events = Some(server.connect(&cc.egui_ctx, native_wayland(cc)));
+        }
+        // AI through publik API or the person's own key; the first launch asks. Not without a
+        // preferences folder, where the choice could not be kept, and the first-launch dialog
+        // stays closed while an agent drives the app over `--control`.
+        if let Some(dir) = settings_dir() {
+            let mut ai = pdfcraft_ui_egui::ai::Ai::new(app_info(Some(dir)));
+            if control_file.is_some() {
+                ai.skip_first_run();
+            }
+            app.ai = Some(ai);
         }
         if let Some(file) = &control_file {
             let client = app.attach_control(&cc.egui_ctx);

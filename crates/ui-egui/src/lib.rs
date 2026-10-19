@@ -30,6 +30,8 @@ macro_rules! tl_ctx {
 
 mod a11y_ui;
 mod actions_ui;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod ai;
 mod appearance;
 pub mod canvas;
 mod chrome;
@@ -354,6 +356,13 @@ pub enum Dialog {
     AuditSpace,
     /// Signatures ▸ Show certificate.
     CertificateViewer,
+    /// AI: the setup flow (publik API or the person's own key), on first launch and from
+    /// Preferences ▸ AI. Desktop only.
+    AiSetup,
+    /// All tools ▸ AI assistant ▸ Summarize.
+    AiSummary,
+    /// All tools ▸ AI assistant ▸ Ask about this document.
+    AiAsk,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -814,6 +823,11 @@ pub struct PdfCraftApp {
     pub pending_full_screen: Option<DocId>,
     /// An absolute GoToR target waiting for approval, before any target-file I/O (#1364).
     pub pending_remote_link: Option<PendingRemoteLink>,
+    /// AI through publik API or the person's own key (desktop only). `None` until the desktop
+    /// shell installs it, and in tests and runs without a settings folder, where no setup dialog
+    /// may appear.
+    #[cfg(not(target_arch = "wasm32"))]
+    pub ai: Option<ai::Ai>,
 }
 
 /// Where in a document a request to open an address came from.
@@ -1050,6 +1064,8 @@ impl PdfCraftApp {
             pending_link: None,
             pending_full_screen: None,
             pending_remote_link: None,
+            #[cfg(not(target_arch = "wasm32"))]
+            ai: None,
             protect_draft: Default::default(),
             boxes_draft: Default::default(),
             marks_draft: Default::default(),
@@ -2076,6 +2092,11 @@ impl PdfCraftApp {
 
     /// Run a catalogue command. Commands that aren't implemented yet say which milestone ships them.
     pub fn run_command(&mut self, command: &str) {
+        // All tools ▸ AI assistant: dialogs of this desktop shell, not engine commands.
+        #[cfg(not(target_arch = "wasm32"))]
+        if ai::run(self, command) {
+            return;
+        }
         if let Some(spec) = pdfcraft_engine::commands::command(command) {
             use pdfcraft_engine::commands::Needs;
             // A tool that needs a document, chosen with none open, asks for the file and then
@@ -3086,6 +3107,8 @@ impl eframe::App for PdfCraftApp {
         }
         self.poll_updates();
         self.poll_print();
+        #[cfg(not(target_arch = "wasm32"))]
+        ai::frame(self, ctx);
         // Shortcuts deferred last frame: the text field has taken that frame's typing since.
         let deferred = std::mem::take(&mut self.deferred_commands);
         self.shortcuts(ctx);

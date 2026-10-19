@@ -260,7 +260,7 @@ fn reading_mode_label(mode: &str) -> &'static str {
     }
 }
 
-/// Preferences: interface language and size, appearance, identity and JavaScript. Returns `true` to close.
+/// Preferences: interface language and size, appearance, identity, AI (desktop) and JavaScript. Returns `true` to close.
 pub(crate) fn preferences_body(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tokens) -> bool {
     ui.label(egui::RichText::new(tl!("Preferences")).font(theme::semibold(18.0)));
     ui.horizontal(|ui| {
@@ -476,6 +476,12 @@ pub(crate) fn preferences_body(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tok
     );
     ui.add_space(8.0);
     date_format(ui, app, t);
+    // AI through publik API or the person's own key: desktop only.
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        ui.add_space(8.0);
+        crate::ai::preferences_section(ui, app, t);
+    }
     ui.add_space(8.0);
     ui.label(egui::RichText::new("JavaScript").font(theme::semibold(13.0)));
     egui::Frame::new().fill(t.hover).corner_radius(egui::CornerRadius::same(6)).inner_margin(egui::Margin::same(10)).show(ui, |ui| {

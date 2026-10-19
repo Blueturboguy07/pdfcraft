@@ -44,6 +44,10 @@ getrandom = "0.4"
 arboard = { version = "3.6", default-features = false, features = ["image-data"] }
 # Waits for native file pickers off the UI thread (already in the tree through wgpu).
 pollster = "1.0"
+# publik API as the zero-setup AI option (or the person's own key): provisioning, the credential
+# file, the calls and the setup flow (All tools ▸ AI assistant). Desktop only: it talks to the
+# network, through the system's curl, and only after the person sets it up and clicks.
+craft-publik = { path = "../../../craft-publik", version = "0.1.0", features = ["egui"] }
 
 [target.'cfg(all(unix, not(target_os = "macos"), not(target_arch = "wasm32")))'.dependencies]
 # Discover configured font directories without linking libfontconfig or running a subprocess.

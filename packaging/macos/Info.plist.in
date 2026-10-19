@@ -13,7 +13,7 @@
   <key>CFBundleExecutable</key>
   <string>PdfCraft</string>
   <key>CFBundleIdentifier</key>
-  <string>ai.storyteller.pdfcraft</string>
+  <string>com.publik.pdfcraft</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundlePackageType</key>

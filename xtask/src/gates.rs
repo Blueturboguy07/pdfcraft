@@ -555,12 +555,14 @@ mod tests {
         assert!(pdf.contains("<key>CFBundleTypeIconFile</key>"), "declares document icon file for Finder");
     }
 
-    // The bundle id must match the app id the binary uses; renames change both (#174).
+    // publik signs and notarizes the macOS build with its own Developer ID, so the bundle id is
+    // publik's (com.publik.pdfcraft). The app id the binary uses on Linux (Wayland app id, window
+    // class, desktop file, Flatpak) stays upstream's; renames change it there (#174).
     #[test]
-    fn macos_bundle_id_matches_app_id() {
-        assert!(read("packaging/macos/Info.plist.in").contains("<string>ai.storyteller.pdfcraft</string>"), "bundle id");
+    fn macos_bundle_id_is_publiks_and_the_linux_app_id_is_unchanged() {
+        assert!(read("packaging/macos/Info.plist.in").contains("<string>com.publik.pdfcraft</string>"), "bundle id");
         let main = read("apps/pdfcraft/src/main.rs");
-        assert!(main.contains(r#"const APP_ID: &str = "ai.storyteller.pdfcraft""#), "APP_ID drifted from the bundle id");
+        assert!(main.contains(r#"const APP_ID: &str = "ai.storyteller.pdfcraft""#), "APP_ID drifted from the Linux app id");
     }
 
     // Committed file with `<!-- -->` comments stripped, so a commented-out claim cannot pass.

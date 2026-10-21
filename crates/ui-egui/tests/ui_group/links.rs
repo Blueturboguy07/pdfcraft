@@ -30,9 +30,9 @@ fn discord_button_in_the_top_bar_opens_discord() {
 fn home_screen_links() {
     for (label, url) in [
         ("Join our Discord", links::DISCORD),
-        ("PdfCraft web page", "https://getartcraft.com/apps/pdfcraft"),
-        ("PdfCraft on GitHub", "https://github.com/storytold/pdfcraft"),
-        ("ArtCraft website", "https://getartcraft.com"),
+        ("PdfCraft web page", "https://publikhq.com/pdfcraft"),
+        ("PdfCraft on GitHub", "https://github.com/Blueturboguy07/pdfcraft"),
+        ("ArtCraft website", "https://publikhq.com/adobe"),
     ] {
         let mut h = harness(|_| {});
         h.get_by_label("Join the ArtCraft community");

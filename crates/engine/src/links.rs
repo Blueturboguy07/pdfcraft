@@ -4,13 +4,13 @@
 use icu_properties::props::Script;
 use std::path::{Path, PathBuf};
 
-/// The app's name in ArtCraft URLs (`getartcraft.com/apps/{APP}`, `github.com/storytold/{APP}`).
+/// The app's name in ArtCraft URLs (`publikhq.com/{APP}`, `github.com/Blueturboguy07/{APP}`).
 pub const APP: &str = "pdfcraft";
 
 pub const DISCORD: &str = "https://discord.gg/artcraft";
-pub const WEBSITE: &str = "https://getartcraft.com";
-pub const APP_PAGE: &str = "https://getartcraft.com/apps/pdfcraft";
-pub const GITHUB: &str = "https://github.com/storytold/pdfcraft";
+pub const WEBSITE: &str = "https://publikhq.com/adobe";
+pub const APP_PAGE: &str = "https://publikhq.com/pdfcraft";
+pub const GITHUB: &str = "https://github.com/Blueturboguy07/pdfcraft";
 
 /// A link and the registry command that opens it.
 #[derive(Clone, Copy, Debug)]
@@ -556,7 +556,7 @@ mod tests {
     #[test]
     fn urls_follow_the_artcraft_scheme() {
         assert_eq!(super::APP_PAGE, format!("{}/apps/{}", super::WEBSITE, super::APP));
-        assert_eq!(super::GITHUB, format!("https://github.com/storytold/{}", super::APP));
+        assert_eq!(super::GITHUB, format!("https://github.com/Blueturboguy07/{}", super::APP));
         for l in super::LINKS {
             assert!(l.url.starts_with("https://"), "{}", l.url);
             assert!(crate::commands::command(l.command).is_some(), "{} is a registered command", l.command);

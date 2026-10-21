@@ -1162,6 +1162,7 @@ dependencies = [
 [[package]]
 name = "craft-publik"
 version = "0.1.0"
+source = "git+https://github.com/Blueturboguy07/craft-publik?rev=1da0e89298f3552a5e74d1e8b47d865028e13580#1da0e89298f3552a5e74d1e8b47d865028e13580"
 dependencies = [
  "egui",
  "serde",

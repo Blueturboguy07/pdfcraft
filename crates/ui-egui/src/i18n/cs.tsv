@@ -117,7 +117,6 @@
 	Split document…	Rozdělit dokument…
 	Number pages…	Očíslovat stránky…
 	Keyboard shortcuts	Klávesové zkratky
-	Join the ArtCraft Discord	Připojit se ke komunitě ArtCraft na Discordu
 	PdfCraft web page	Webová stránka PdfCraft
 	PdfCraft on GitHub	PdfCraft na GitHubu
 	ArtCraft website	Web ArtCraft
@@ -224,7 +223,6 @@ key	Space	Mezerník
 	{folder} is already pinned to Home	Složka {folder} už je připnutá na úvodní obrazovce
 	You can pin up to {n} folders. Unpin one first.	Připnout lze nejvýše {n} složek. Nejdříve některou odepněte.
 	Pinned {folder} to Home	Složka {folder} je připnutá na úvodní obrazovce
-	Join our Discord	Připojit se k našemu Discordu
 	Close	Zavřít
 	Next / previous match	Další / předchozí shoda
 	Copy selected text	Kopírovat vybraný text
@@ -283,7 +281,6 @@ key	Space	Mezerník
 	Welcome to PdfCraft	Vítá vás PdfCraft
 	An open-source PDF workbench — local, private, and scriptable.	Open-source dílna pro PDF — lokální, soukromá a skriptovatelná.
 	Join the ArtCraft community	Připojte se ke komunitě ArtCraft
-	Get help, share feedback and follow development on Discord.	Získejte pomoc, sdílejte zpětnou vazbu a sledujte vývoj na Discordu.
 	Recommended tools	Doporučené nástroje
 	Use now	Použít
 	Open file	Otevřít soubor

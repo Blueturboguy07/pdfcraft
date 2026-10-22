@@ -137,7 +137,7 @@ fn tool_row(ui: &mut egui::Ui, t: &Tokens, g: &ToolGroup) -> egui::Response {
     let tip = match g.availability {
         Availability::Ready => tl!("Available").to_string(),
         Availability::Planned(m) => format!("{} {m} — {}", tl!("Planned for milestone"), tl!("open to see what it will include")),
-        Availability::Provider => tl!("Optional: needs an AI provider you configure").into(),
+        Availability::Provider => tl!("Uses publik API or your own key").into(),
     };
     let tip = if clipped { format!("{} — {tip}", tl!(g.label)) } else { tip };
     theme::hand(resp).on_hover_text(tip)
@@ -213,7 +213,7 @@ fn tool_detail(app: &mut PdfCraftApp, ui: &mut egui::Ui, t: &Tokens, g: &'static
                 }
                 let (rect, resp) = ui.allocate_exact_size(vec2(ui.available_width(), 34.0), Sense::click());
                 resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, tl!(item.label)));
-                let ready = item.availability == Availability::Ready;
+                let ready = matches!(item.availability, Availability::Ready | Availability::Provider);
                 let press = theme::Press::track(ui, &resp);
                 press.wash(ui, rect, 6, false);
                 let body = rect.translate(press.offset());
@@ -228,7 +228,7 @@ fn tool_detail(app: &mut PdfCraftApp, ui: &mut egui::Ui, t: &Tokens, g: &'static
                 let (chip, fill, cfg) = match item.availability {
                     Availability::Ready => (tl!("Ready"), Color32::from_rgb(0xDD, 0xF3, 0xE4), Color32::from_rgb(0x1E, 0x7B, 0x43)),
                     Availability::Planned(m) => (m, t.pressed, t.text_muted),
-                    Availability::Provider => ("AI", t.pressed, t.text_muted),
+                    Availability::Provider => ("AI", Color32::from_rgb(0xDD, 0xF3, 0xE4), Color32::from_rgb(0x1E, 0x7B, 0x43)),
                 };
                 let font = theme::semibold(9.5);
                 let chip_label = tl!(chip).to_string();

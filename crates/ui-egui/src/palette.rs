@@ -82,7 +82,7 @@ pub fn show(app: &mut PdfCraftApp, ctx: &egui::Context) {
                     detail: tl!("Tool").into(),
                     icon: g.icon,
                     command: None,
-                    ready: g.availability == Availability::Ready,
+                    ready: matches!(g.availability, Availability::Ready | Availability::Provider),
                 },
             ));
         }
@@ -100,7 +100,7 @@ pub fn show(app: &mut PdfCraftApp, ctx: &egui::Context) {
                             detail: tl!(g.label).into(),
                             icon: i.icon,
                             command: Some(i.command),
-                            ready: i.availability == Availability::Ready,
+                            ready: matches!(i.availability, Availability::Ready | Availability::Provider),
                         },
                     ));
                 }

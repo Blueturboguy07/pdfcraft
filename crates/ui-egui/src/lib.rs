@@ -2120,7 +2120,7 @@ impl PdfCraftApp {
             .find(|i| i.command == command)
             .map(|i| match i.availability {
                 pdfcraft_engine::catalog::Availability::Planned(m) => crate::i18n::fmt(tl!("ships in milestone {m}"), &[("m", m)]),
-                pdfcraft_engine::catalog::Availability::Provider => tl!("needs an AI provider (off by default)").to_string(),
+                pdfcraft_engine::catalog::Availability::Provider => tl!("uses publik API or your own key").to_string(),
                 pdfcraft_engine::catalog::Availability::Ready => tl!("is available").to_string(),
             })
             .unwrap_or_else(|| tl!("is not available yet").to_string());

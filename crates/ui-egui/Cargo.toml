@@ -47,7 +47,7 @@ pollster = "1.0"
 # publik API as the zero-setup AI option (or the person's own key): provisioning, the credential
 # file, the calls and the setup flow (All tools ▸ AI assistant). Desktop only: it talks to the
 # network, through the system's curl, and only after the person sets it up and clicks.
-craft-publik = { git = "https://github.com/Blueturboguy07/craft-publik", rev = "1da0e89298f3552a5e74d1e8b47d865028e13580", version = "0.1.0", features = ["egui"] }
+craft-publik = { git = "https://github.com/Blueturboguy07/craft-publik", rev = "854bdf66e4d97cb19546fdb0ed0e258a20510f0d", version = "0.1.0", features = ["egui"] }
 
 [target.'cfg(all(unix, not(target_os = "macos"), not(target_arch = "wasm32")))'.dependencies]
 # Discover configured font directories without linking libfontconfig or running a subprocess.

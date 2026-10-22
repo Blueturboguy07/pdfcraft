@@ -1162,7 +1162,7 @@ dependencies = [
 [[package]]
 name = "craft-publik"
 version = "0.1.0"
-source = "git+https://github.com/Blueturboguy07/craft-publik?rev=1da0e89298f3552a5e74d1e8b47d865028e13580#1da0e89298f3552a5e74d1e8b47d865028e13580"
+source = "git+https://github.com/Blueturboguy07/craft-publik?rev=854bdf66e4d97cb19546fdb0ed0e258a20510f0d#854bdf66e4d97cb19546fdb0ed0e258a20510f0d"
 dependencies = [
  "egui",
  "serde",
@@ -6439,7 +6439,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "once_cell",
  "rustix 1.1.5",
  "windows-sys 0.52.0",

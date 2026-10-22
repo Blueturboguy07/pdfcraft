@@ -470,6 +470,8 @@
 	Document JavaScripts	JavaScript del documento
 	Document actions	Azioni documento
 	AI assistant	Assistente IA
+	Uses publik API or your own key	Usa la publik API o la tua chiave
+	uses publik API or your own key	usa la publik API o la tua chiave
 	Bring your own model (off by default)	Usa il tuo modello (disattivato per impostazione predefinita)
 	Summarize	Riepiloga
 	Ask about this document	Fai domande su questo documento

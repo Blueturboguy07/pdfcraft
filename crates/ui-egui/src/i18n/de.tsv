@@ -446,6 +446,8 @@
 	Document JavaScripts	Dokument-JavaScripts
 	Document actions	Dokumentaktionen
 	AI assistant	KI-Assistent
+	Uses publik API or your own key	Nutzt die publik API oder Ihren eigenen Schlüssel
+	uses publik API or your own key	nutzt die publik API oder Ihren eigenen Schlüssel
 	Bring your own model (off by default)	Eigenes Modell nutzen (standardmäßig aus)
 	Summarize	Zusammenfassen
 	Ask about this document	Fragen zu diesem Dokument stellen

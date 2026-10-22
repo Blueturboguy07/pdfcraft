@@ -471,6 +471,8 @@
 	Document JavaScripts	Сценарії JavaScript документа
 	Document actions	Дії документа
 	AI assistant	ШІ-асистент
+	Uses publik API or your own key	Використовує publik API або ваш власний ключ
+	uses publik API or your own key	використовує publik API або ваш власний ключ
 	Bring your own model (off by default)	Додайте власну модель (типово вимкнено)
 	Summarize	Створити зведення
 	Ask about this document	Запитати про цей документ

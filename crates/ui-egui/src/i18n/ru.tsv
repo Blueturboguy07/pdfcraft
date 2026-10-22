@@ -466,6 +466,8 @@
 	Document JavaScripts	Скрипты документа
 	Document actions	Действия документа
 	AI assistant	AI-ассистент
+	Uses publik API or your own key	Использует publik API или ваш собственный ключ
+	uses publik API or your own key	использует publik API или ваш собственный ключ
 	Bring your own model (off by default)	Использовать свою модель (по умолчанию выключено)
 	Summarize	Суммировать
 	Ask about this document	Спросить об этом документе

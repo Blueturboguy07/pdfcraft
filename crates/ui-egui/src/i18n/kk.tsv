@@ -433,6 +433,8 @@
 	Document JavaScripts	Құжаттың JavaScript-тері
 	Document actions	Құжат әрекеттері
 	AI assistant	ЖИ көмекшісі
+	Uses publik API or your own key	publik API немесе өз кілтіңізді пайдаланады
+	uses publik API or your own key	publik API немесе өз кілтіңізді пайдаланады
 	Bring your own model (off by default)	Өз моделіңізді пайдаланыңыз (әдепкіде өшірулі)
 	Summarize	Түйіндеу
 	Ask about this document	Осы құжат туралы сұрау

@@ -554,6 +554,8 @@ key	Space	Mezerník
 	Document JavaScripts	Skripty JavaScript dokumentu
 	Document actions	Akce dokumentu
 	AI assistant	AI asistent
+	Uses publik API or your own key	Používá publik API nebo váš vlastní klíč
+	uses publik API or your own key	používá publik API nebo váš vlastní klíč
 	Bring your own model (off by default)	Vlastní model (ve výchozím stavu vypnuto)
 	Summarize	Shrnout
 	Ask about this document	Zeptat se na tento dokument

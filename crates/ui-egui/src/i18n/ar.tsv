@@ -473,6 +473,8 @@
 	Document JavaScripts	سكربتات JavaScript للمستند
 	Document actions	إجراءات المستند
 	AI assistant	مساعد الذكاء الاصطناعي
+	Uses publik API or your own key	يستخدم publik API أو مفتاحك الخاص
+	uses publik API or your own key	يستخدم publik API أو مفتاحك الخاص
 	Bring your own model (off by default)	استخدم نموذجك الخاص (متوقف افتراضيًا)
 	Summarize	تلخيص
 	Ask about this document	اسأل عن هذا المستند

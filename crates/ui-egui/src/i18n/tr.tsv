@@ -431,6 +431,8 @@
 	Document JavaScripts	Belge JavaScript'leri
 	Document actions	Belge eylemleri
 	AI assistant	Yapay zeka asistanı
+	Uses publik API or your own key	publik API'yi veya kendi anahtarınızı kullanır
+	uses publik API or your own key	publik API'yi veya kendi anahtarınızı kullanır
 	Bring your own model (off by default)	Kendi modelini getir (varsayılan olarak kapalı)
 	Summarize	Özetle
 	Ask about this document	Bu belge hakkında soru sor

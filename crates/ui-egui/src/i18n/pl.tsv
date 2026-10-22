@@ -468,6 +468,8 @@
 	Document JavaScripts	Skrypty JavaScript dokumentu
 	Document actions	Akcje dokumentu
 	AI assistant	Asystent AI
+	Uses publik API or your own key	Używa publik API lub własnego klucza
+	uses publik API or your own key	używa publik API lub własnego klucza
 	Bring your own model (off by default)	Podłącz własny model (domyślnie wyłączone)
 	Summarize	Podsumuj
 	Ask about this document	Zapytaj o ten dokument

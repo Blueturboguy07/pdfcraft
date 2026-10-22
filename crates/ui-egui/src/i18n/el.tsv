@@ -1795,6 +1795,8 @@
 	Document JavaScripts	Σενάρια JavaScript εγγράφου
 	Document actions	Ενέργειες εγγράφου
 	AI assistant	Βοηθός τεχνητής νοημοσύνης
+	Uses publik API or your own key	Χρησιμοποιεί το publik API ή το δικό σας κλειδί
+	uses publik API or your own key	χρησιμοποιεί το publik API ή το δικό σας κλειδί
 	Bring your own model (off by default)	Χρήση δικού σας μοντέλου (απενεργοποιημένο από προεπιλογή)
 	Summarize	Σύνοψη
 	Ask about this document	Ερώτηση σχετικά με αυτό το έγγραφο

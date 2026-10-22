@@ -63,6 +63,8 @@
 	A stream uses LZW compression	Tok uporablja stiskanje LZW
 	A summary describes the table's purpose and layout. Add a Summary attribute to each table.	Povzetek opisuje namen in postavitev tabele. Vsaki tabeli dodajte atribut Summary.
 	AI assistant	Pomočnik za UI
+	Uses publik API or your own key	Uporablja publik API ali vaš lastni ključ
+	uses publik API or your own key	uporablja publik API ali vaš lastni ključ
 	About	O programu
 	About PdfCraft	O programu PdfCraft
 	Accepted	Potrjeno

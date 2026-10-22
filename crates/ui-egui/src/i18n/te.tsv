@@ -450,6 +450,8 @@ comment menu	Edit	సవరించు
 	Document JavaScripts	పత్రంలోని JavaScriptలు
 	Document actions	పత్ర చర్యలు
 	AI assistant	AI సహాయకుడు
+	Uses publik API or your own key	publik API లేదా మీ స్వంత కీని ఉపయోగిస్తుంది
+	uses publik API or your own key	publik API లేదా మీ స్వంత కీని ఉపయోగిస్తుంది
 	Bring your own model (off by default)	మీ సొంత మోడల్ (డిఫాల్ట్‌గా ఆఫ్)
 	Summarize	సారాంశం రూపొందించు
 	Ask about this document	ఈ పత్రం గురించి అడుగు

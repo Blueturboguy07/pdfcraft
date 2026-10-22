@@ -444,6 +444,8 @@
 	Document JavaScripts	Dokumentum JavaScriptjei
 	Document actions	Dokumentumműveletek
 	AI assistant	MI-asszisztens
+	Uses publik API or your own key	A publik API-t vagy a saját kulcsát használja
+	uses publik API or your own key	a publik API-t vagy a saját kulcsát használja
 	Bring your own model (off by default)	Saját modell használata (alapból ki van kapcsolva)
 	Summarize	Összefoglalás
 	Ask about this document	Kérdezz erről a dokumentumról

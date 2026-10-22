@@ -473,6 +473,8 @@
 	Document JavaScripts	文書の JavaScript
 	Document actions	文書のアクション
 	AI assistant	AI アシスタント
+	Uses publik API or your own key	publik API または独自のキーを使用します
+	uses publik API or your own key	publik API または独自のキーを使用します
 	Bring your own model (off by default)	自分のモデルを使用（初期設定では無効）
 	Summarize	要約
 	Ask about this document	この文書について質問

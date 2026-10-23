@@ -534,7 +534,7 @@ pub static TOOL_GROUPS: &[ToolGroup] = &[
         badge: Some("Optional"),
         availability: Provider,
         sections: &[ToolSection {
-            title: "Bring your own model (off by default)",
+            title: "Uses publik API or your own key",
             items: &[
                 item("Summarize", "sparkles", "ai.summary", Provider),
                 item("Ask about this document", "message-circle-reply", "ai.ask", Provider),

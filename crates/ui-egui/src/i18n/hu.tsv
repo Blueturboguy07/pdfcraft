@@ -142,7 +142,7 @@
 	Recent	Legutóbbiak
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	A PdfCraftban megnyitott fájlok itt jelennek meg. Húzz ide egy PDF-et a megnyitáshoz.
 	Privacy	Adatvédelem
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	A PdfCraft offline működik. Nincs telemetria, nincs fiók, és nincs felhőfeldolgozás, amíg nem adsz hozzá szolgáltatót.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	A PdfCraft offline működik. Nincs fiók, és nincs felhőfeldolgozás, amíg nem adsz hozzá szolgáltatót.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	A szkriptek homokozóban futnak, fájl- és hálózat-hozzáférés nélkül. Kikapcsolt JavaScript mellett az Acrobat szabványos formázó, ellenőrző és számoló függvényei továbbra is működnek.
 	Back to all tools	Vissza az összes eszközhöz
 	Close panel	Panel bezárása

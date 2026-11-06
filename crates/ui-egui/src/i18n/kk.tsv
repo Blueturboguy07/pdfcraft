@@ -132,7 +132,7 @@
 	Recent	Соңғы
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	PdfCraft-те ашқан файлдарыңыз осында көрсетіледі. PDF файлын ашу үшін оны кез келген жерге апарып тастаңыз.
 	Privacy	Жекелік
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft офлайн жұмыс істейді. Провайдер қоспағаныңызша телеметрия да, тіркелгі де, бұлтта өңдеу де жоқ.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft офлайн жұмыс істейді. Провайдер қоспағаныңызша тіркелгі де, бұлтта өңдеу де жоқ.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	Скрипттер файлға да, желіге де қатынасы жоқ құмсалғышта орындалады. JavaScript өшірулі тұрса да, Acrobat-тың стандартты пішімдеу, тексеру және есептеу функциялары әлі де жұмыс істейді.
 	Back to all tools	Барлық құралдарға оралу
 	Close panel	Панельді жабу

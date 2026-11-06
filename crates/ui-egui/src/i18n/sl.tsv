@@ -1318,7 +1318,7 @@
 	PdfCraft didn't shut down normally. These documents had changes that were autosaved:	PdfCraft se ni zaprl običajno. Ti dokumenti so imeli samodejno shranjene spremembe:
 	PdfCraft on GitHub	PdfCraft na GitHubu
 	PdfCraft web page	Spletna stran PdfCraft
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft deluje brez povezave. Brez telemetrije, brez računa in brez obdelave v oblaku, razen če dodate ponudnika.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft deluje brez povezave. Brez računa in brez obdelave v oblaku, razen če dodate ponudnika.
 	PdfCraft {c} is up to date.	PdfCraft {c} je posodobljen.
 	PdfCraft {v} is available.	Na voljo je PdfCraft {v}.
 	People may need more time to respond. Check that nothing has a time limit.	Ljudje bodo morda potrebovali več časa za odziv. Preverite, da nič nima časovne omejitve.

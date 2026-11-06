@@ -287,7 +287,7 @@ key	Space	Mezerník
 	Recent	Nedávné
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	Zde se zobrazí soubory, které otevřete v PdfCraftu. Soubor PDF otevřete přetažením kamkoli do okna.
 	Privacy	Soukromí
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft funguje offline. Žádná telemetrie, žádný účet a žádné zpracování v cloudu, pokud nepřidáte poskytovatele.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft funguje offline. Žádný účet a žádné zpracování v cloudu, pokud nepřidáte poskytovatele.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	Skripty běží v izolovaném prostředí bez přístupu k souborům a síti. S vypnutým JavaScriptem dál fungují standardní funkce Acrobatu pro formátování, ověření a výpočty.
 	Back to all tools	Zpět na všechny nástroje
 	Close panel	Zavřít panel

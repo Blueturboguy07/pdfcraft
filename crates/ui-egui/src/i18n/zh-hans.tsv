@@ -1858,7 +1858,7 @@
 	Prepare a form	准备表单
 	Digitally sign	数字签名
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	在 PdfCraft 中打开的文件会显示在这里。将 PDF 拖放到任意位置即可打开。
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft 可离线工作。无遥测、无账号，除非您自行添加服务商，否则无云端处理。
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft 可离线工作。无需账号，除非您自行添加服务商，否则无云端处理。
 
 	Measure distance	测量距离
 	Measure perimeter	测量周长

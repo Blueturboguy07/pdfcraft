@@ -171,7 +171,7 @@
 	Recent	الأخيرة
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	الملفات التي تفتحها في PdfCraft تظهر هنا. أفلت ملف PDF في أي مكان لفتحه.
 	Privacy	الخصوصية
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	يعمل PdfCraft دون اتصال. لا قياس عن بُعد ولا حساب ولا معالجة سحابية إلا إذا أضفت مزوّدًا.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	يعمل PdfCraft دون اتصال. لا حساب ولا معالجة سحابية إلا إذا أضفت مزوّدًا.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	تعمل السكربتات في بيئة معزولة دون وصول إلى الملفات أو الشبكة. عند إيقاف JavaScript تبقى دوال Acrobat القياسية للتنسيق والتحقق والحساب تعمل.
 	Back to all tools	العودة إلى كل الأدوات
 	Close panel	إغلاق اللوحة

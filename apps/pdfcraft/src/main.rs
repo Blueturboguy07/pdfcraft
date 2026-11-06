@@ -45,6 +45,11 @@ mod updates;
 #[path = "windows_manifest.rs"]
 mod windows_manifest;
 
+// publik's usage counts (README: Usage counts). The file is publik's reference client; only its
+// `http_post` is PdfCraft's own (ureq v3 and the operating system's trusted roots).
+#[rustfmt::skip]
+mod publik_telemetry;
+
 /// Freedesktop app id: the `.desktop` file name and the hicolor icon name.
 const APP_ID: &str = "ai.storyteller.pdfcraft";
 
@@ -181,6 +186,12 @@ fn rejoin_split_paths(args: Vec<String>, exists: impl Fn(&str) -> bool) -> Vec<S
     out
 }
 
+/// The version in publik's usage counts: the release tag without its `v`, for example `0.9.0-publik.5`.
+/// The build number comes from `packaging/PUBLIK_BUILD`, the file the bundle version comes from.
+fn publik_version() -> String {
+    format!("{}-publik.{}", env!("CARGO_PKG_VERSION"), include_str!("../../../packaging/PUBLIK_BUILD").trim())
+}
+
 fn main() -> eframe::Result {
     // First, so the panic hook and every start-up warning are recorded (`logging`).
     let logger = logging::install();
@@ -259,6 +270,10 @@ fn main() -> eframe::Result {
         single_instance::Claim::Primary(server) => Some(server),
         single_instance::Claim::Alone => None,
     };
+    // publik's usage counts: `app_opened` now, `active_session` every 30 minutes, on a background
+    // thread. After every early exit above (`--version`, the self-test, a launch that hands its
+    // files to the PdfCraft already running), so those send nothing.
+    publik_telemetry::start("pdfcraft", &publik_version(), None);
     let choice = renderer_choice(std::env::var("PDFCRAFT_RENDERER").ok().as_deref());
     let launch = Launch { files, options, control_file, create_images, integrated, window_controls };
     // Finder, Open With and the Dock deliver files as Apple events, not arguments; catch the one

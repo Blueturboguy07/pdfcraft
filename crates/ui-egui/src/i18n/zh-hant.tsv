@@ -1802,7 +1802,7 @@
 	Prepare a form	準備表單
 	Digitally sign	數位簽署
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	在 PdfCraft 開啟過的檔案會顯示在這裡。將 PDF 拖曳至視窗即可開啟。
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft 可離線使用，不收集遙測資料，也不需要帳號。只有在您新增服務供應商後，才會使用雲端處理。
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft 可離線使用，不需要帳號。只有在您新增服務供應商後，才會使用雲端處理。
 	Double-click	滑鼠按兩下
 	PDF/A…	PDF/A…
 	Microsoft Word (.docx)	Microsoft Word（.docx）

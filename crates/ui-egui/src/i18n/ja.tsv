@@ -171,7 +171,7 @@
 	Recent	最近使ったファイル
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	PdfCraft で開いたファイルがここに表示されます。PDF をウィンドウにドロップして開くこともできます。
 	Privacy	プライバシー
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft はオフラインで動作します。使用状況の送信やアカウント登録はありません。サービス提供元を追加しない限り、クラウド処理も行いません。
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft はオフラインで動作します。アカウント登録は不要です。サービス提供元を追加しない限り、クラウド処理も行いません。
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	スクリプトはファイルやネットワークにアクセスできないサンドボックスで実行されます。JavaScript を無効にしても、Acrobat の標準の書式設定・検証・計算関数は使用できます。
 	Back to all tools	すべてのツールに戻る
 	Close panel	パネルを閉じる

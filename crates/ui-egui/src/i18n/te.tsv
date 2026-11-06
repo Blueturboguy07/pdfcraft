@@ -148,7 +148,7 @@ comment menu	Edit	సవరించు
 	Recent	ఇటీవలి
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	PdfCraftలో మీరు తెరిచే ఫైల్‌లు ఇక్కడ కనిపిస్తాయి. PDFను తెరవడానికి దాన్ని ఎక్కడైనా లాగి వదలండి.
 	Privacy	గోప్యత
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft ఆఫ్‌లైన్‌లో పనిచేస్తుంది. టెలిమెట్రీ లేదు, ఖాతా అవసరం లేదు, మీరు ప్రొవైడర్‌ను జోడిస్తే తప్ప క్లౌడ్ ప్రాసెసింగ్ ఉండదు.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft ఆఫ్‌లైన్‌లో పనిచేస్తుంది. ఖాతా అవసరం లేదు, మీరు ప్రొవైడర్‌ను జోడిస్తే తప్ప క్లౌడ్ ప్రాసెసింగ్ ఉండదు.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	స్క్రిప్ట్‌లు ఫైల్ లేదా నెట్‌వర్క్ యాక్సెస్ లేని శాండ్‌బాక్స్‌లో నడుస్తాయి. JavaScript ఆఫ్‌లో ఉన్నా, Acrobat ప్రామాణిక ఫార్మాట్, ధృవీకరణ, గణన ఫంక్షన్‌లు పనిచేస్తాయి.
 	Back to all tools	అన్ని సాధనాలకు తిరిగి వెళ్లు
 	Close panel	ప్యానెల్‌ను మూసివేయి

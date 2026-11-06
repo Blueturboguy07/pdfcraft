@@ -20,7 +20,7 @@
   <img alt="License: MIT OR Apache-2.0" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-12a58a">
   <img alt="Written in Rust" src="https://img.shields.io/badge/written%20in-Rust-0a7563">
   <img alt="Platforms: macOS, Windows, Linux, FreeBSD, web" src="https://img.shields.io/badge/runs%20on-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux%20%C2%B7%20FreeBSD%20%C2%B7%20web-12a58a">
-  <img alt="No account, no telemetry" src="https://img.shields.io/badge/no%20account-no%20telemetry-0a7563">
+  <img alt="No account needed" src="https://img.shields.io/badge/no%20account-needed-0a7563">
 </p>
 
 <p align="center">
@@ -93,7 +93,7 @@ Every save appends your changes and leaves the original bytes untouched. Writes 
 <td width="33%" valign="top">
 
 ### Yours
-No account, no telemetry, no cloud. It works offline and opens instantly. The engine, CLI and app are all open source.
+No account, no cloud. It works offline and opens instantly. The engine, CLI and app are all open source.
 
 </td>
 </tr>
@@ -262,7 +262,7 @@ Press <kbd>⌘K</kbd> to search every tool and command, or browse the **All tool
 ## Runs everywhere, stays yours
 
 - **Native on macOS, Windows, Linux and FreeBSD**, and **in the browser** through WebAssembly, from the same Rust codebase. Windows builds come for x64, x86 and ARM64 (Windows on ARM, no emulation); every ARM64 change is tested on ARM64 hardware in CI.
-- **Private by design.** Documents never leave your machine. There's no account, no telemetry and no cloud processing.
+- **Private by design.** Documents never leave your machine. There's no account and no cloud processing. publik's build sends anonymous [usage counts](#usage-counts), which you can turn off.
 - **Engine first.** Parsing, rendering and editing live in reusable library crates. The interface is one swappable layer on top.
 - **Scriptable.** The `pdfcraft-cli` tool (see [Built for agents, too](#built-for-agents-too)) covers inspecting, rendering, extracting text, editing, combining, extracting pages and splitting. Robustness sweeps run on the same engine as the app.
 
@@ -565,6 +565,15 @@ And [**ArtCraft**](https://getartcraft.com/) itself, our AI image and video stud
 </p>
 
 ---
+
+## Usage counts
+
+publik's build of PdfCraft sends two anonymous usage events to publik: `app_opened` (one for each launch)
+and `active_session` (every 30 minutes while the app runs). An event holds the app name, the app
+version, the operating system, the CPU type and a random install ID. It holds no file, no file name
+and no prompt. When this computer has a publik API key for PdfCraft, the event carries that key, so publik
+counts the account one time. The `pdfcraft-cli` tool sends nothing. To turn it off, set `DO_NOT_TRACK=1`
+in the environment. Details: https://publikhq.com/skills/telemetry.md
 
 ## License and credits
 

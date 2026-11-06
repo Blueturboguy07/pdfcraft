@@ -129,7 +129,7 @@
 	Recent	Son kullanılanlar
 	Files you open in PdfCraft appear here. Drop a PDF anywhere to open it.	PdfCraft'ta açtığınız dosyalar burada görünür. Açmak için bir PDF'i herhangi bir yere bırakın.
 	Privacy	Gizlilik
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft çevrimdışı çalışır. Bir sağlayıcı eklemediğiniz sürece telemetri yok, hesap yok ve bulut işleme yok.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft çevrimdışı çalışır. Bir sağlayıcı eklemediğiniz sürece hesap yok ve bulut işleme yok.
 	Scripts run in a sandbox without file or network access. With JavaScript off, Acrobat's standard format, validate and calculate functions still work.	Komut dosyaları dosya veya ağ erişimi olmadan yalıtılmış alanda (sandbox) çalışır. JavaScript kapalıyken bile Acrobat'ın standart biçimlendirme, doğrulama ve hesaplama işlevleri çalışmaya devam eder.
 	Back to all tools	Tüm araçlara geri dön
 	Close panel	Paneli kapat

@@ -866,7 +866,7 @@ theme	Appearance	Giao diện
 	Patterns	Họa tiết
 	Patterns (graphics objects)	Họa tiết (đối tượng đồ họa)
 	PdfCraft didn't shut down normally. These documents had changes that were autosaved:	PdfCraft không đóng bình thường. Các tài liệu này có thay đổi đã được tự động lưu:
-	PdfCraft works offline. No telemetry, no account, and no cloud processing unless you add a provider.	PdfCraft hoạt động ngoại tuyến. Không thu thập dữ liệu sử dụng, không cần tài khoản, và không xử lý đám mây trừ khi bạn thêm nhà cung cấp.
+	PdfCraft works offline. No account, and no cloud processing unless you add a provider.	PdfCraft hoạt động ngoại tuyến. Không cần tài khoản, và không xử lý đám mây trừ khi bạn thêm nhà cung cấp.
 	PdfCraft {c} is up to date.	PdfCraft {c} đã là bản mới nhất.
 	PdfCraft {v} is available.	PdfCraft {v} đã có sẵn.
 	Percentage	Phần trăm

@@ -1,0 +1,110 @@
+# publik build of PdfCraft (telemetry v1 and later publik builds).
+#
+# It compiles the universal macOS binaries on a GitHub runner with this repo's own release script
+# (packaging/macos/package.sh, ad-hoc signature, no notarization) and uploads them as artifacts.
+# It holds no certificate and no secret. It creates no release and no tag.
+# publik then signs, notarizes and staples on its own Mac with the same script:
+#   packaging/macos/package.sh --arch universal --skip-build   (Developer ID + notary profile)
+# PdfCraft only: the artifact also holds the OCR models of the bundle (models.tar.gz), see step 2b.
+name: publik build
+
+on:
+  push:
+    branches: ["telemetry/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publik-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: macOS universal (unsigned)
+    runs-on: macos-15
+    timeout-minutes: 150
+    env:
+      CARGO_TERM_COLOR: always
+      CARGO_INCREMENTAL: 0
+      RUST_BACKTRACE: 1
+      # The fonts the release embeds (same pin as .github/workflows/release.yml).
+      CRAFT_FONTS_DIR: ${{ github.workspace }}/craft-fonts
+      CRAFT_FONTS_REQUIRED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out craft-fonts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: storytold/craft-fonts
+          ref: 3d9ab3a132ed0eff457e424226a435a901da30d3
+          path: craft-fonts
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin, x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          key: publik-build-macos-universal
+          cache-on-failure: true
+      - name: Build and package (ad-hoc signature, no notarization)
+        run: |
+          # The short commit, as publik's earlier builds carry it (<APP>_BUILD_SHA).
+          export "$(echo "pdfcraft" | tr '[:lower:]-' '[:upper:]_')_BUILD_SHA=$(git rev-parse --short HEAD)"
+          packaging/macos/package.sh --arch universal
+      - name: Collect the unsigned build
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/publik-out"
+          mkdir -p "$OUT/bins" "$OUT/app"
+          # 1. The thin binaries that `package.sh --skip-build` reads: target/<triple>/release/<bin>.
+          : > "$OUT/bins.list"
+          for t in aarch64-apple-darwin x86_64-apple-darwin; do
+            find "target/$t/release" -maxdepth 1 -type f -perm +111 | while IFS= read -r f; do
+              if file -b "$f" | grep -q "Mach-O"; then echo "${f#target/}" >> "$OUT/bins.list"; fi
+            done
+          done
+          cat "$OUT/bins.list"
+          [ -s "$OUT/bins.list" ]
+          tar -czf "$OUT/bins/bins.tar.gz" -C target -T "$OUT/bins.list"
+          # 2. The licence texts of the pinned craft-fonts checkout (package.sh copies them into the bundle).
+          find craft-fonts/fonts -type f \( -name 'OFL*' -o -iname 'LICEN*' -o -iname '*.txt' \) -print0 \
+            | tar -czf "$OUT/bins/craft-fonts-licences.tar.gz" --null -T -
+          # 2b. PdfCraft only: the OCR models that package.sh staged into the bundle (`cargo xtask models`:
+          #     every ATTRIBUTION.toml `kind = "model"` file, checked by SHA-256, its licence text and
+          #     ATTRIBUTION.txt). publik's Mac compiles nothing, so its `--skip-build` run takes them from here.
+          tar -czf "$OUT/bins/models.tar.gz" -C "target/macos-package/PdfCraft.app/Contents/Resources" models
+          tar -tzvf "$OUT/bins/models.tar.gz"
+          # 3. Facts about this build.
+          {
+            echo "slug=pdfcraft"
+            echo "commit=$(git rev-parse HEAD)"
+            echo "build_sha=$(git rev-parse --short HEAD)"
+            echo "publik_build=$(tr -d '[:space:]' < packaging/PUBLIK_BUILD)"
+            echo "fonts_ref=3d9ab3a132ed0eff457e424226a435a901da30d3"
+            echo "runner=$(sw_vers -productName) $(sw_vers -productVersion) $(uname -m)"
+            echo "rustc=$(rustc -V)"
+            echo "cargo=$(cargo -V)"
+            while IFS= read -r f; do
+              echo "bin=$f archs=$(lipo -archs "target/$f") sha256=$(shasum -a 256 "target/$f" | cut -d' ' -f1)"
+            done < "$OUT/bins.list"
+            ls -l dist/release
+          } | tee "$OUT/bins/build-info.txt"
+          # 4. The ad-hoc signed app, packed with ditto (keeps symlinks). A reference copy.
+          ditto -c -k --keepParent "target/macos-package/PdfCraft.app" "$OUT/app/PdfCraft.app.zip"
+          ls -l "$OUT/bins" "$OUT/app"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: pdfcraft-macos-bins
+          path: ${{ runner.temp }}/publik-out/bins/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: pdfcraft-macos-adhoc-app
+          path: ${{ runner.temp }}/publik-out/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

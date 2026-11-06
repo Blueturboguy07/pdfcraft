@@ -48,10 +48,46 @@ jobs:
         with:
           key: publik-build-macos-universal
           cache-on-failure: true
+      - name: OCR models of publik build 4 (used only when the model host fails)
+        run: |
+          set -euo pipefail
+          # packaging/env.sh (stage_models) runs `cargo xtask models`: it downloads the two OCR models with
+          # curl and checks each SHA-256 against ATTRIBUTION.toml. The model host stopped serving the .rten
+          # files (HTTP 403, seen on Nov 6 2026). publik build 4 of this repo holds the same two files.
+          # This step takes them from that release. The curl in front of PATH (next step) hands one to
+          # xtask only when the real download fails. The SHA-256 check of xtask still decides.
+          FALLBACK="$RUNNER_TEMP/ocr-models"
+          mkdir -p "$FALLBACK" "$RUNNER_TEMP/ocr-shim" "$RUNNER_TEMP/prev-mnt"
+          /usr/bin/curl -sSfL --retry 3 -o "$RUNNER_TEMP/prev.dmg" \
+            "https://github.com/Blueturboguy07/pdfcraft/releases/download/v0.9.0-publik.4/pdfcraft-0.9.0-macos-universal.dmg"
+          hdiutil attach -nobrowse -readonly -mountpoint "$RUNNER_TEMP/prev-mnt" "$RUNNER_TEMP/prev.dmg" >/dev/null
+          cp "$RUNNER_TEMP/prev-mnt/PdfCraft.app/Contents/Resources/models/"*.rten "$FALLBACK/"
+          hdiutil detach "$RUNNER_TEMP/prev-mnt" >/dev/null
+          rm -f "$RUNNER_TEMP/prev.dmg"
+          shasum -a 256 "$FALLBACK"/*
+          cat > "$RUNNER_TEMP/ocr-shim/curl" <<'SH'
+          #!/bin/bash
+          # xtask calls: curl -sSfL --retry 3 -o <file> <url>
+          /usr/bin/curl "$@"; rc=$?
+          [ "$rc" = 0 ] && exit 0
+          url="${*: -1}"; out=""; prev=""
+          for a in "$@"; do if [ "$prev" = "-o" ]; then out="$a"; fi; prev="$a"; done
+          copy="$OCR_MODELS_FALLBACK/${url##*/}"
+          if [ -n "$out" ] && [ -f "$copy" ]; then
+            echo "curl shim: $url failed (curl exit $rc); xtask gets the copy of publik build 4 and checks its SHA-256" >&2
+            cp "$copy" "$out"
+            exit 0
+          fi
+          exit "$rc"
+          SH
+          chmod +x "$RUNNER_TEMP/ocr-shim/curl"
       - name: Build and package (ad-hoc signature, no notarization)
         run: |
           # The short commit, as publik's earlier builds carry it (<APP>_BUILD_SHA).
           export "$(echo "pdfcraft" | tr '[:lower:]-' '[:upper:]_')_BUILD_SHA=$(git rev-parse --short HEAD)"
+          # The curl of the step above, in front of the system curl (see there).
+          export OCR_MODELS_FALLBACK="$RUNNER_TEMP/ocr-models"
+          export PATH="$RUNNER_TEMP/ocr-shim:$PATH"
           packaging/macos/package.sh --arch universal
       - name: Collect the unsigned build
         run: |

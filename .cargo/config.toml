@@ -1,2 +1,6 @@
 [alias]
 xtask = "run -p xtask --"
+
+[env]
+# `cargo test` and `cargo run` start the tools many times: they send no publik usage counts.
+DO_NOT_TRACK = "1"

@@ -82,7 +82,19 @@ pdfcraft-cli ui     --control FILE <method> [key=value …] [--out shot.png]
                                                            drive a running app started with --control FILE"
 );
 
+// publik's usage counts. The file is publik's reference client, kept as it is.
+#[rustfmt::skip]
+mod publik_telemetry;
+
+/// The version in publik's usage counts: the release tag without its `v`, for example `0.9.0-publik.5`.
+/// The build number comes from `packaging/PUBLIK_BUILD`, the file the bundle version comes from.
+fn publik_version() -> String {
+    format!("{}-publik.{}", env!("CARGO_PKG_VERSION"), include_str!("../../../packaging/PUBLIK_BUILD").trim())
+}
+
 fn main() -> ExitCode {
+    // publik's usage counts (README: Usage counts). A detached copy of this tool sends them, so the tool never waits.
+    publik_telemetry::start_cli("pdfcraft", &publik_version());
     let args: Vec<String> = std::env::args().skip(1).collect();
     // `<command> --help` too; only right after the command, so a later `-h` (a value) still reaches it.
     let command = match args.get(1).map(String::as_str) {

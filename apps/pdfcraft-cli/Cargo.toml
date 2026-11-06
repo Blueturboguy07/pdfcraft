@@ -13,6 +13,8 @@ path = "src/main.rs"
 workspace = true
 
 [dependencies]
+# publik's usage counts (src/publik_telemetry.rs): the HTTP client that file needs.
+ureq = "2"
 pdfcraft-render = { workspace = true }
 serde_json = { workspace = true }
 pdfcraft-engine = { workspace = true }

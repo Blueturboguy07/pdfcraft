@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: storytold/craft-fonts
-          ref: 3d9ab3a132ed0eff457e424226a435a901da30d3
+          ref: b076417b5880bd4154bd22f00695b1d28c6bea83
           path: craft-fonts
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
@@ -48,46 +48,37 @@ jobs:
         with:
           key: publik-build-macos-universal
           cache-on-failure: true
-      - name: OCR models of publik build 4 (used only when the model host fails)
+      - name: Check out craft-i18n (the commit in craft-i18n.rev)
         run: |
           set -euo pipefail
-          # packaging/env.sh (stage_models) runs `cargo xtask models`: it downloads the two OCR models with
-          # curl and checks each SHA-256 against ATTRIBUTION.toml. The model host stopped serving the .rten
-          # files (HTTP 403, seen on Nov 6 2026). publik build 4 of this repo holds the same two files.
-          # This step takes them from that release. The curl in front of PATH (next step) hands one to
-          # xtask only when the real download fails. The SHA-256 check of xtask still decides.
-          FALLBACK="$RUNNER_TEMP/ocr-models"
-          mkdir -p "$FALLBACK" "$RUNNER_TEMP/ocr-shim" "$RUNNER_TEMP/prev-mnt"
-          /usr/bin/curl -sSfL --retry 3 -o "$RUNNER_TEMP/prev.dmg" \
-            "https://github.com/Blueturboguy07/pdfcraft/releases/download/v0.9.0-publik.4/pdfcraft-0.9.0-macos-universal.dmg"
-          hdiutil attach -nobrowse -readonly -mountpoint "$RUNNER_TEMP/prev-mnt" "$RUNNER_TEMP/prev.dmg" >/dev/null
-          cp "$RUNNER_TEMP/prev-mnt/PdfCraft.app/Contents/Resources/models/"*.rten "$FALLBACK/"
-          hdiutil detach "$RUNNER_TEMP/prev-mnt" >/dev/null
-          rm -f "$RUNNER_TEMP/prev.dmg"
-          shasum -a 256 "$FALLBACK"/*
-          cat > "$RUNNER_TEMP/ocr-shim/curl" <<'SH'
-          #!/bin/bash
-          # xtask calls: curl -sSfL --retry 3 -o <file> <url>
-          /usr/bin/curl "$@"; rc=$?
-          [ "$rc" = 0 ] && exit 0
-          url="${*: -1}"; out=""; prev=""
-          for a in "$@"; do if [ "$prev" = "-o" ]; then out="$a"; fi; prev="$a"; done
-          copy="$OCR_MODELS_FALLBACK/${url##*/}"
-          if [ -n "$out" ] && [ -f "$copy" ]; then
-            echo "curl shim: $url failed (curl exit $rc); xtask gets the copy of publik build 4 and checks its SHA-256" >&2
-            cp "$copy" "$out"
-            exit 0
-          fi
-          exit "$rc"
-          SH
-          chmod +x "$RUNNER_TEMP/ocr-shim/curl"
+          # Upstream v0.19.0 keeps the interface translations in storytold/craft-i18n. build.rs embeds
+          # them from CRAFT_I18N_DIR; CRAFT_I18N_REQUIRED=1 makes a missing checkout an error, as in
+          # upstream's releases (storytold/craft-common-actions, actions/checkout-craft-i18n).
+          rev=$(tr -d '[:space:]' < craft-i18n.rev)
+          [[ "$rev" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::craft-i18n.rev holds no commit SHA: '$rev'"; exit 1; }
+          git init -q craft-i18n
+          git -C craft-i18n fetch -q --depth 1 https://github.com/storytold/craft-i18n "$rev"
+          git -C craft-i18n checkout -q FETCH_HEAD
+          [ "$(git -C craft-i18n rev-parse HEAD)" = "$rev" ]
+          echo "CRAFT_I18N_DIR=$GITHUB_WORKSPACE/craft-i18n" >> "$GITHUB_ENV"
+          echo "CRAFT_I18N_REQUIRED=1" >> "$GITHUB_ENV"
+          echo "craft-i18n at $rev"
+      - name: Test the AI step and the publik changes
+        run: |
+          set -euo pipefail
+          # publik's AI step (crates/ui-egui/src/ai.rs: All tools > AI assistant, Preferences > AI).
+          cargo test --locked -p pdfcraft-ui-egui --lib -- ai::
+          # publik's links (publikhq.com, the Blueturboguy07 fork, no Discord) and its update source.
+          cargo test --locked -p pdfcraft-engine --lib -- links::
+          cargo test --locked -p pdfcraft-ui-egui --test it -- links:: updates:: \
+            tabs_shrink_to_fit_then_arrows_step_through_them_and_open_stays_in_sight \
+            the_integrated_title_bar_is_the_traffic_light_band
+          # publik's bundle id gate and the network-crate baseline (the CLI's ureq for usage counts).
+          cargo test --locked -p xtask -- macos_bundle_id_is_publiks_and_the_linux_app_id_is_unchanged netcheck::
       - name: Build and package (ad-hoc signature, no notarization)
         run: |
           # The short commit, as publik's earlier builds carry it (<APP>_BUILD_SHA).
           export "$(echo "pdfcraft" | tr '[:lower:]-' '[:upper:]_')_BUILD_SHA=$(git rev-parse --short HEAD)"
-          # The curl of the step above, in front of the system curl (see there).
-          export OCR_MODELS_FALLBACK="$RUNNER_TEMP/ocr-models"
-          export PATH="$RUNNER_TEMP/ocr-shim:$PATH"
           packaging/macos/package.sh --arch universal
       - name: Collect the unsigned build
         run: |
@@ -118,7 +109,8 @@ jobs:
             echo "commit=$(git rev-parse HEAD)"
             echo "build_sha=$(git rev-parse --short HEAD)"
             echo "publik_build=$(tr -d '[:space:]' < packaging/PUBLIK_BUILD)"
-            echo "fonts_ref=3d9ab3a132ed0eff457e424226a435a901da30d3"
+            echo "fonts_ref=b076417b5880bd4154bd22f00695b1d28c6bea83"
+            echo "i18n_ref=$(git -C craft-i18n rev-parse HEAD)"
             echo "runner=$(sw_vers -productName) $(sw_vers -productVersion) $(uname -m)"
             echo "rustc=$(rustc -V)"
             echo "cargo=$(cargo -V)"

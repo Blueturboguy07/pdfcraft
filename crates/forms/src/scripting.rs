@@ -60,6 +60,21 @@ pub struct ScriptResult {
 pub trait Scripts {
     /// Run `script` for `event` on `target`, whose value is `value`; `fields` is the whole form.
     fn run(&mut self, event: FieldEvent, script: &str, target: &Field, value: &str, fields: &[Field]) -> ScriptResult;
+
+    /// [`Self::run`] again for an appearance, with dates written in English names (`util.printd`)
+    /// because no font of the field can draw the date language's (#5303); what it logs was
+    /// already logged by the first run. `None` when it can't: no English dates here, or the
+    /// script failed. What it returns is what the script made, even when that is the value.
+    fn rerun_with_english_dates(
+        &mut self,
+        _event: FieldEvent,
+        _script: &str,
+        _target: &Field,
+        _value: &str,
+        _fields: &[Field],
+    ) -> Option<ScriptResult> {
+        None
+    }
 }
 
 /// No script engine (or JavaScript turned off): scripts change nothing.
@@ -96,6 +111,13 @@ pub(crate) fn formatted(doc: &Document, f: &Field, value: &str, scripts: &mut dy
     let js = f.actions.scripts.format.as_ref()?;
     let r = scripts.run(FieldEvent::Format, js, f, value, &fields(doc));
     Some(r.value)
+}
+
+/// [`formatted`] with dates in English names, for widgets whose fonts can't draw the date
+/// language's; `None` when the field has no Format script or the English run didn't happen.
+pub(crate) fn formatted_in_english(doc: &Document, f: &Field, value: &str, scripts: &mut dyn Scripts) -> Option<String> {
+    let js = f.actions.scripts.format.as_ref()?;
+    scripts.rerun_with_english_dates(FieldEvent::Format, js, f, value, &fields(doc)).map(|r| r.value)
 }
 
 /// Apply script changes to other fields (values written without re-running their scripts;
@@ -176,6 +198,7 @@ pub fn document_scripts_named(doc: &Document) -> Vec<(String, String)> {
     let Some(names) = cat.as_dict().and_then(|c| c.get(b"Names")).map(|n| doc.resolve(n)) else { return Vec::new() };
     let Some(tree) = names.as_dict().and_then(|n| n.get(b"JavaScript")).cloned() else { return Vec::new() };
     let mut out: Vec<(String, String)> = Vec::new();
+    let mut scripts = crate::script_budget();
     // Kids stay unresolved on the stack, and each node is read once: a node listed many times,
     // or among its own kids, must not multiply the work.
     let mut stack = vec![tree];
@@ -203,7 +226,7 @@ pub fn document_scripts_named(doc: &Document) -> Vec<(String, String)> {
                     Object::String(s) => s.to_text(),
                     _ => continue,
                 };
-                if let Some(js) = crate::script(doc, v) {
+                if let Some(js) = crate::script(doc, v, &mut scripts) {
                     out.push((key, js));
                 }
             }
@@ -300,25 +323,7 @@ pub fn set_field_script(doc: &mut Document, name: &str, event: &str, js: Option<
         }
     })?;
     if key == b"C" {
-        let af_ref = crate::author::ensure_form(doc)?;
-        let mut co: Vec<Object> = doc
-            .get(af_ref)
-            .as_dict()
-            .and_then(|d| d.get(b"CO").cloned())
-            .map(|c| doc.resolve(&c))
-            .and_then(|c| c.as_array().cloned())
-            .unwrap_or_default();
-        co.retain(|o| o.as_ref() != Some(f.obj));
-        if js.is_some() {
-            co.push(Object::Ref(f.obj));
-        }
-        doc.update_dict(af_ref, |d| {
-            if co.is_empty() {
-                d.remove(b"CO");
-            } else {
-                d.set(b"CO".to_vec(), Object::Array(co));
-            }
-        })?;
+        crate::calc_order::keep_listed(doc, f.obj, js.is_some())?;
     }
     Ok(())
 }

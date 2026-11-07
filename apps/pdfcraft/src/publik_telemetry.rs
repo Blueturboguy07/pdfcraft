@@ -29,7 +29,7 @@ static STOP: Mutex<Option<Sender<()>>> = Mutex::new(None); // stop() drops the s
 
 // ---- HTTP: the only code that needs a crate. PdfCraft's copy: this ONE function differs from publik's
 // reference client. PdfCraft has ureq v3 with no bundled root list (apps/pdfcraft/Cargo.toml), so the
-// function uses ureq v3 and the certificate authorities the operating system trusts, as src/updates.rs does.
+// function uses ureq v3 and the certificate authorities the operating system trusts.
 fn http_post(url: &str, body: &str, key: Option<&str>) -> Result<u16, String> {
     let found = rustls_native_certs::load_native_certs();
     let roots: Vec<ureq::tls::Certificate<'static>> = found.certs.iter().map(|c| ureq::tls::Certificate::from_der(c.as_ref()).to_owned()).collect();

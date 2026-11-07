@@ -5,6 +5,16 @@ fn hex(s: &str) -> Vec<u8> {
 }
 
 #[test]
+fn file_id_is_a_one_way_16_byte_identifier() {
+    let seed = [7u8; 32];
+    let id = file_id(&seed);
+    assert_eq!(id.len(), 16);
+    assert_eq!(id, file_id(&seed));
+    assert_ne!(id, seed[..16]);
+    assert_ne!(id, file_id(&[8u8; 32]));
+}
+
+#[test]
 fn rc4_reference_vectors() {
     assert_eq!(rc4(b"Key", b"Plaintext"), hex("bbf316e8d940af0ad3"));
     assert_eq!(rc4(b"Wiki", b"pedia"), hex("1021bf0420"));
@@ -121,6 +131,32 @@ fn strings_and_streams_round_trip_and_are_scrambled() {
     }
 }
 
+thread_local! {
+    /// Crypt filter names compared or looked up, on this thread.
+    pub(crate) static FILTER_COMPARES: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+#[test]
+fn crypt_filters_are_looked_up_once_per_handler() {
+    let plain = new(Algorithm::Aes128, "", "o", -1);
+    let mut d = plain.dict().clone();
+    let n = 5_000;
+    let mut filters: Vec<_> = (0..n).map(|i| (format!("F{i}").into_bytes(), Method::Identity)).collect();
+    filters.append(&mut d.crypt_filters);
+    d.crypt_filters = filters;
+    FILTER_COMPARES.with(|c| c.set(0));
+    let h = SecurityHandler::open(d, ID, None).unwrap();
+    let strings = 1_000;
+    let enc = plain.encrypt_string(7, 0, b"secret");
+    for _ in 0..strings {
+        assert_eq!(h.decrypt_string(7, 0, &enc), b"secret");
+        assert_eq!(h.decrypt_stream(7, 0, &plain.encrypt_stream(7, 0, b"s", StreamKind::Normal), StreamKind::Normal), b"s");
+    }
+    assert_eq!(h.decrypt_stream(7, 0, b"x", StreamKind::Named(b"F3")), b"x");
+    let compares = FILTER_COMPARES.with(|c| c.get());
+    assert!(compares <= 2 * n + 3 * strings, "{compares} filter name comparisons");
+}
+
 #[test]
 fn identity_crypt_filters_leave_data_alone() {
     let mut d = new(Algorithm::Aes256, "", "o", -1).dict().clone();
@@ -204,11 +240,11 @@ fn unsupported_handlers_are_reported() {
 
 #[test]
 fn permission_bits_follow_table_22() {
-    let p = Permissions { bits: -3904, owner: false }; // 0xFFFFF0C0: only reserved bits set
+    let p = Permissions { bits: -3904, owner: false, revision: 3 }; // 0xFFFFF0C0: only reserved bits set
     assert!(!p.print() && !p.modify() && !p.copy() && !p.annotate() && !p.assemble());
-    let p = Permissions { bits: -1, owner: false };
+    let p = Permissions { bits: -1, owner: false, revision: 3 };
     assert!(p.print() && p.modify() && p.copy() && p.annotate() && p.assemble() && p.fill_forms());
-    let p = Permissions { bits: 0, owner: true };
+    let p = Permissions { bits: 0, owner: true, revision: 3 };
     assert!(p.modify(), "owners ignore /P");
 }
 

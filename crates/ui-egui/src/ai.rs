@@ -551,7 +551,7 @@ fn start_tool(app: &mut PdfCraftApp, ctx: &egui::Context, tool: Tool, provider: 
 
 /// Preferences ▸ AI: the provider, its status and its controls.
 pub(crate) fn preferences_section(ui: &mut egui::Ui, app: &mut PdfCraftApp, t: &Tokens) {
-    ui.label(egui::RichText::new("AI").font(theme::semibold(13.0)));
+    // The Preferences card around this section carries the "AI" title.
     let Some(ai) = app.ai.as_mut() else {
         note(ui, t, OFF);
         return;

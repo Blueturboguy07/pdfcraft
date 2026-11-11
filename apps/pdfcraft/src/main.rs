@@ -48,10 +48,33 @@ mod text_scale;
 #[path = "windows_manifest.rs"]
 mod windows_manifest;
 
-// publik's usage counts (README: Usage counts). The file is publik's reference client; only its
-// `http_post` is PdfCraft's own (ureq v3 and the operating system's trusted roots).
-#[rustfmt::skip]
-mod publik_telemetry;
+// Sign in with publik, usage counting and the AI pay choice: this build's publik facts and the
+// gate every publik app opens with.
+mod publik;
+
+/// The app and the publik gate. `PdfCraftApp` is the eframe app; this wrapper only puts the gate
+/// in front of it.
+struct App(PdfCraftApp, craft_publik::ui::Gate);
+
+impl eframe::App for App {
+    fn raw_input_hook(&mut self, ctx: &egui::Context, raw: &mut egui::RawInput) {
+        eframe::App::raw_input_hook(&mut self.0, ctx, raw);
+    }
+    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+        eframe::App::save(&mut self.0, storage);
+    }
+    fn logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        eframe::App::logic(&mut self.0, ctx, frame);
+    }
+    fn ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
+        // Sign in with publik comes first: the gate draws itself until the person is signed in
+        // (and, the first time, has chosen how the app pays for AI). Nothing of the app shows before.
+        if !self.1.ui(ui) {
+            return;
+        }
+        eframe::App::ui(&mut self.0, ui, frame);
+    }
+}
 
 /// Freedesktop app id: the `.desktop` file name and the hicolor icon name.
 const APP_ID: &str = "ai.storyteller.pdfcraft";
@@ -110,20 +133,6 @@ fn settings_dir() -> Option<std::path::PathBuf> {
             log::warn!("could not migrate preferences to the XDG configuration folder; using the original location: {e}");
             legacy
         }
-    }
-}
-
-/// What publik needs to know about this build. The app token is public by design (it can only
-/// mint capped keys attributed to PdfCraft) and lives at the repository root, so source builds
-/// carry it. AI settings (`ai.json`) go in the preferences folder, next to `app.ron`.
-fn app_info(config_dir: Option<std::path::PathBuf>) -> pdfcraft_ui_egui::ai::AppInfo {
-    pdfcraft_ui_egui::ai::AppInfo {
-        slug: "pdfcraft",
-        name: "PdfCraft",
-        version: env!("CARGO_PKG_VERSION"),
-        app_token: include_str!("../../../publik-app-token.txt"),
-        dialects: &["chat_completions"],
-        config_dir,
     }
 }
 
@@ -216,12 +225,6 @@ fn rejoin_split_paths(args: Vec<String>, exists: impl Fn(&str) -> bool) -> Vec<S
     out
 }
 
-/// The version in publik's usage counts: the release tag without its `v`, for example `0.9.0-publik.5`.
-/// The build number comes from `packaging/PUBLIK_BUILD`, the file the bundle version comes from.
-fn publik_version() -> String {
-    format!("{}-publik.{}", env!("CARGO_PKG_VERSION"), include_str!("../../../packaging/PUBLIK_BUILD").trim())
-}
-
 fn main() -> eframe::Result {
     // Windows: the update helper is a copy of this program started with `--finish-update`.
     #[cfg(windows)]
@@ -257,7 +260,7 @@ fn main() -> eframe::Result {
     // Builder check (publikhq.com/skills/setup.md): the built app provisions publik API for real
     // and prints one line. The builder who runs it is the consent.
     if std::env::var_os("PUBLIK_SELF_TEST").is_some() {
-        println!("{}", pdfcraft_ui_egui::ai::self_test(&app_info(settings_dir())));
+        println!("{}", craft_publik::self_test(&publik::app_info(settings_dir())));
         return Ok(());
     }
     startup.files = rejoin_split_paths(startup.files, |p| std::path::Path::new(p).is_file());
@@ -291,10 +294,9 @@ fn main() -> eframe::Result {
         single_instance::Claim::Primary(server) => Some(server),
         single_instance::Claim::Alone => None,
     };
-    // publik's usage counts: `app_opened` now, `active_session` every 30 minutes, on a background
-    // thread. After every early exit above (`--version`, the self-test, a launch that hands its
-    // files to the PdfCraft already running), so those send nothing.
-    publik_telemetry::start("pdfcraft", &publik_version(), None);
+    // publik's usage counts (`app_opened` now, `active_session` every 30 minutes) start once the
+    // gate passed (`publik::app_info`, `craft_publik::ui::Gate`), so `--version`, the self-test and
+    // a launch that hands its files to the PdfCraft already running send nothing.
     let choice = renderer_choice(std::env::var("PDFCRAFT_RENDERER").ok().as_deref());
     let launch = Launch { files, options, control_file, create_images, integrated, window_controls, two_paged };
     // Finder, Open With and the Dock deliver files as Apple events, not arguments; catch the one
@@ -470,7 +472,7 @@ fn app_creator<'a>(
         // preferences folder, where the choice could not be kept, and the first-launch dialog
         // stays closed while an agent drives the app over `--control`.
         if let Some(dir) = settings_dir() {
-            let mut ai = pdfcraft_ui_egui::ai::Ai::new(app_info(Some(dir)));
+            let mut ai = pdfcraft_ui_egui::ai::Ai::new(publik::app_info(Some(dir)));
             if control_file.is_some() {
                 ai.skip_first_run();
             }
@@ -523,7 +525,11 @@ fn app_creator<'a>(
                 log::warn!("--{k} {v}: {e}");
             }
         }
-        Ok(Box::new(app))
+        Ok(Box::new(App(
+            app,
+            // Sign in with publik: provisioning starts now, on a worker thread; `ui` draws it.
+            craft_publik::ui::Gate::new(publik::app_info(settings_dir())),
+        )))
     })
 }
 

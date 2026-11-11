@@ -341,12 +341,14 @@ pub(crate) fn frame(app: &mut PdfCraftApp, ctx: &egui::Context) {
     if open != Some(Dialog::AiAsk) {
         ai.ask.stop_unsent();
     }
-    // The first launch asks once the window is up (a few frames in). "Later" ends that for good.
+    // The first launch asks once the publik gate passed and the window is up (a few frames in):
+    // after "Use my own key" at the gate, the own-key form. "Later" ends that for good.
     if !ai.first_run_checked {
         ai.frames = ai.frames.saturating_add(1);
         ctx.request_repaint();
-        if ai.frames > 3 {
+        if ai.frames > 3 && craft_publik::gate::passed() {
             ai.first_run_checked = true;
+            ai.state.reload_credential(); // the gate wrote it after this state was created
             if ai.state.wants_first_run() || ai.state.owes_first_card() {
                 ai.open_setup = true;
             }
@@ -432,7 +434,7 @@ fn tool(app: &mut PdfCraftApp, ui: &mut egui::Ui, t: &Tokens, tool: Tool) -> (bo
     };
     let provider = ai.state.provider();
     if !provider.is_set_up() {
-        ui.label("This tool needs AI. Set it up first: publik API, with no key to paste, or your own key.");
+        ui.label("This tool needs AI. Set it up first: connect your publik plan (no key to paste) or use your own key.");
         ui.add_space(10.0);
         let mut out = (false, None);
         ui.horizontal(|ui| {
@@ -678,7 +680,16 @@ mod tests {
         }
         let dir = std::env::temp_dir().join(format!("pdfcraft-ai-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
-        Some(Ai::new(AppInfo { slug: "pdfcraft-ui-test", name: "PdfCraft", version: "0", app_token: "", dialects: &[], config_dir: Some(dir) }))
+        Some(Ai::new(AppInfo {
+            slug: "pdfcraft-ui-test",
+            name: "PdfCraft",
+            version: "0",
+            app_token: "",
+            uses_ai: true,
+            endpoints: craft_publik::Endpoints::DEFAULT,
+            dialects: &[],
+            config_dir: Some(dir),
+        }))
     }
 
     #[test]
@@ -703,6 +714,13 @@ mod tests {
         let Some(ai) = fresh_ai("first-run") else { return };
         let mut h = harness(Some(ai));
         h.run_steps(8);
+        // The publik gate holds the first launch's dialog until it passed; a test has no gate.
+        assert!(h.state().dialog.is_none(), "nothing opens before the gate passed");
+        // Once the gate passed, `frame` asks for the setup flow (`open_setup`); ask the same way.
+        if let Some(ai) = h.state_mut().ai.as_mut() {
+            ai.open_setup = true;
+        }
+        h.run_steps(3);
         assert_eq!(h.state().dialog, Some(Dialog::AiSetup), "the setup dialog opens by itself");
         h.get_by_label("Use my own key");
         h.get_by_label("Later").click();

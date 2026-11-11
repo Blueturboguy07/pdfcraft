@@ -10,3 +10,5 @@ plan/
 # A craft-fonts checkout used as the optional CRAFT_FONTS_DIR build input (CI and releases put it here).
 /craft-fonts
 .claude/
+# The publik app token comes from the build secret PUBLIK_APP_TOKEN, not from the repository.
+publik-app-token.txt

@@ -2,7 +2,9 @@
 #
 # It compiles the universal macOS binaries on a GitHub runner with this repo's own release script
 # (packaging/macos/package.sh, ad-hoc signature, no notarization) and uploads them as artifacts.
-# It holds no certificate and no secret. It creates no release and no tag.
+# It holds no certificate. It reads one secret, PUBLIK_APP_TOKEN (the publik app token): a step writes
+# it to publik-app-token.txt before the build, because that file is not in the repository.
+# It creates no release and no tag.
 # publik then signs, notarizes and staples on its own Mac with the same script:
 #   packaging/macos/package.sh --arch universal --skip-build   (Developer ID + notary profile)
 # PdfCraft only: the artifact also holds the OCR models of the bundle (models.tar.gz), see step 2b.
@@ -34,6 +36,14 @@ jobs:
       CRAFT_FONTS_REQUIRED: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Write the publik app token from the repository secret
+        env:
+          PUBLIK_APP_TOKEN: ${{ secrets.PUBLIK_APP_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PUBLIK_APP_TOKEN}" ]; then echo "::error::the repository secret PUBLIK_APP_TOKEN is empty"; exit 1; fi
+          printf '%s' "${PUBLIK_APP_TOKEN}" > publik-app-token.txt
+          echo "publik-app-token.txt: $(wc -c < publik-app-token.txt | tr -d ' ') bytes"
       - name: Check out craft-fonts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

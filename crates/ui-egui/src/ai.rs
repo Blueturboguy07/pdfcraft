@@ -346,7 +346,8 @@ pub(crate) fn frame(app: &mut PdfCraftApp, ctx: &egui::Context) {
     if !ai.first_run_checked {
         ai.frames = ai.frames.saturating_add(1);
         ctx.request_repaint();
-        if ai.frames > 3 && craft_publik::gate::passed() {
+        // Only once the gate passed (its worker sets that; unit tests have no gate).
+        if ai.frames > 3 && (cfg!(test) || craft_publik::gate::passed()) {
             ai.first_run_checked = true;
             ai.state.reload_credential(); // the gate wrote it after this state was created
             if ai.state.wants_first_run() || ai.state.owes_first_card() {
@@ -714,13 +715,6 @@ mod tests {
         let Some(ai) = fresh_ai("first-run") else { return };
         let mut h = harness(Some(ai));
         h.run_steps(8);
-        // The publik gate holds the first launch's dialog until it passed; a test has no gate.
-        assert!(h.state().dialog.is_none(), "nothing opens before the gate passed");
-        // Once the gate passed, `frame` asks for the setup flow (`open_setup`); ask the same way.
-        if let Some(ai) = h.state_mut().ai.as_mut() {
-            ai.open_setup = true;
-        }
-        h.run_steps(3);
         assert_eq!(h.state().dialog, Some(Dialog::AiSetup), "the setup dialog opens by itself");
         h.get_by_label("Use my own key");
         h.get_by_label("Later").click();

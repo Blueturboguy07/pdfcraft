@@ -32,7 +32,7 @@ craft-update = { git = "https://github.com/storytold/craft-libs", version = "=0.
 # The publik module shared by the Craft apps (publikhq.com/sdk/publik.rs.md): Sign in with publik
 # (the gate), usage counting, and publik API or the person's own key. One pin for the whole
 # workspace; branch signin-gate. The crate accepts egui 0.36 and 0.37.
-craft-publik = { git = "https://github.com/Blueturboguy07/craft-publik", rev = "082377e177a716ec4fa5dbe7b371ca5940f97be6", features = ["egui"] }
+craft-publik = { git = "https://github.com/Blueturboguy07/craft-publik", rev = "e1d4730b0a89afb156d40e14d7b7b30e0a9f2648", features = ["egui"] }
 # internal
 pdfcraft-geom = { path = "crates/geom", version = "0.19.1" }
 pdfcraft-filters = { path = "crates/filters", version = "0.19.1" }
